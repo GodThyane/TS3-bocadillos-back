@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.stats import norm
-import generateRandom as gr
+from generateRandom import congruenciaLineal
+from test import testAll
 
 
 class Queue_Guava:
@@ -25,12 +26,12 @@ class Queue_Guava:
         self.stackStation5 = []
         self.matrixStation5 = []
         self.matrixStationWait5 = []
-        self.randomsStation1 = norm.ppf(np.array(gr.congruenciaLineal(100000)), loc=muState1)
-        self.randomsStation2 = norm.ppf(np.array(gr.congruenciaLineal(100000)), loc=muState2)
-        self.randomsStation3 = norm.ppf(np.array(gr.congruenciaLineal(100000)), loc=muState3)
-        self.randomsStation4 = norm.ppf(np.array(gr.congruenciaLineal(100000)), loc=muState4)
-        self.randomsStation42 = norm.ppf(np.array(gr.congruenciaLineal(100000)), loc=muState42, scale=sigma)
-        self.randomsStation5 = norm.ppf(np.array(gr.congruenciaLineal(100000)), loc=muState5)
+        self.randomsStation1 = norm.ppf(np.array(generateRandoms(50000)), loc=muState1)
+        self.randomsStation2 = norm.ppf(np.array(generateRandoms(50000)), loc=muState2)
+        self.randomsStation3 = norm.ppf(np.array(generateRandoms(50000)), loc=muState3)
+        self.randomsStation4 = norm.ppf(np.array(generateRandoms(50000)), loc=muState4)
+        self.randomsStation42 = norm.ppf(np.array(generateRandoms(50000)), loc=muState42, scale=sigma)
+        self.randomsStation5 = norm.ppf(np.array(generateRandoms(50000)), loc=muState5)
         self.indexR1 = 0
         self.indexR2 = 0
         self.indexR3 = 0
@@ -282,63 +283,12 @@ class Station1_Guava:
             self.dayFinishCut)
 
 
+def generateRandoms(n):
+    randoms = congruenciaLineal(n)
+    while not testAll(randoms):
+        randoms = congruenciaLineal(n)
+    return np.array(randoms)
+
+
 queue = Queue_Guava(40, 65, 25, 25, 120, 20, 50)
 queue.start(25)
-
-
-def simulation2(n, mu, sigma, nMax, min):
-    at = min + (nMax - min) * np.array(gr.congruenciaLineal(n))
-    st = norm.ppf(np.array(gr.congruenciaLineal(n)), loc=mu, scale=sigma)
-    aat = []
-    wt = []
-    et = []
-    ft = []
-    for x in range(n):
-        if x == 0:
-            aat.append(at[0])
-            wt.append(0)
-            ft.append(0)
-            et.append(at[0] + st[0])
-        else:
-            aat.append(aat[x - 1] + at[x])
-            wt.append(max(aat[x], et[x - 1]) - aat[x])
-            ft.append(max(aat[x], et[x - 1]) - et[x - 1])
-            et.append(aat[x] + st[x] + wt[x])
-
-    sft = abs(np.array(aat) - np.array(et))
-    l = []
-    for x in range(n):
-        l.append(sum(i <= et[x] for i in aat[x + 1:n]))
-
-    return np.array([at, aat, wt, ft, st, et, sft, l]).T
-
-
-def simulation(n, lam, mu):
-    at = []
-    randomsRiA = np.array(gr.congruenciaLineal(n))
-    iat = abs(np.log(1 - randomsRiA) / lam)
-    start = []
-    randomsRiS = np.array(gr.congruenciaLineal(n))
-    et = abs(np.log(1 - randomsRiS) / mu)
-    ext = []
-    for x in range(n):
-        if x == 0:
-            at.append(0)
-            start.append(0)
-            ext.append(et[0] + start[0])
-        else:
-            at.append(at[x - 1] + iat[x - 1])
-            start.append(max(at[x], ext[x - 1]))
-            ext.append(et[x] + start[x])
-
-    start = np.array(start)
-    at = np.array(at)
-    wt = start - at
-    w = start == at
-    l = []
-    for x in range(n):
-        l.append(sum(i <= ext[x] for i in at[x + 1:n]))
-
-    queue = np.array([at, randomsRiA, iat, start, randomsRiS, et, ext, l, w, wt])
-
-    return queue.T
