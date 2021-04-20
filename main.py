@@ -44,12 +44,12 @@ class Queue_Guava:
         self.matrixStationWait5 = []
 
         # Guarda los tiempos(50000) normalizados con el promedio asignada a cada estación
-        self.randomsStation1 = norm.ppf(np.array(generateRandoms(50000)), loc=muState1)
-        self.randomsStation2 = norm.ppf(np.array(generateRandoms(50000)), loc=muState2)
-        self.randomsStation3 = norm.ppf(np.array(generateRandoms(50000)), loc=muState3)
-        self.randomsStation4 = norm.ppf(np.array(generateRandoms(50000)), loc=muState4)
-        self.randomsStation42 = norm.ppf(np.array(generateRandoms(50000)), loc=muState42, scale=sigma)
-        self.randomsStation5 = norm.ppf(np.array(generateRandoms(50000)), loc=muState5)
+        self.randomsStation1 = norm.ppf((generateRandoms(50000)), loc=muState1)
+        self.randomsStation2 = norm.ppf((generateRandoms(50000)), loc=muState2)
+        self.randomsStation3 = norm.ppf((generateRandoms(50000)), loc=muState3)
+        self.randomsStation4 = norm.ppf((generateRandoms(50000)), loc=muState4)
+        self.randomsStation42 = norm.ppf((generateRandoms(50000)), loc=muState42, scale=sigma)
+        self.randomsStation5 = norm.ppf((generateRandoms(50000)), loc=muState5)
 
         # Índices con los que se recorren los tiempos anteriores
         self.indexR1 = 0
