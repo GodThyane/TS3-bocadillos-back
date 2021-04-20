@@ -337,8 +337,8 @@ class Station1_Guava:
 # utilizando el método de congruencia lineal
 def generateRandoms(n):
     randoms = congruenciaLineal(n)
-    # while not testAll(randoms):
-    #   randoms = congruenciaLineal(n)
+    while not testAll(randoms):
+        randoms = congruenciaLineal(n)
     return np.array(randoms)
 
 
