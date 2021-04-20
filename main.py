@@ -4,14 +4,29 @@ from generateRandom import congruenciaLineal
 from test import testAll
 
 
+# Clase principal la cual recibe los promedios de tiempo que se van a manejar en cada estación.
+
 class Queue_Guava:
-    def __init__(self, muState1, muState2, muState3, muState4, muState42, sigma, muState5):
+    def __init__(self, nBoxPerDay, muState1, muState2, muState3, muState4, muState42, sigma, muState5):
+
+        # Vector donde se guarda los tiempos de permanencia que tiene cada caja de guayabas en bodega.
         self.stack = []
+
+        # Tiempo de producción por día en minuutos
         self.productionTime = 480  # min
+
+        # Guarda la cantidad de cajas de guayabas que no pudieron ser procesadas
         self.dangerGuava = 0
+
+        # Guarda la cola que queda de la estación i
         self.stackStation1 = []
+
+        # Guarda las colas que se forman en cada dia en la estación i
         self.matrixStation1 = []
+
+        # Guarda las colas que no se pudieron procesar por día en la estación i
         self.matrixStationWait1 = []
+
         self.stackStation2 = []
         self.matrixStation2 = []
         self.matrixStationWait2 = []
@@ -26,29 +41,46 @@ class Queue_Guava:
         self.stackStation5 = []
         self.matrixStation5 = []
         self.matrixStationWait5 = []
+
+        # Guarda los tiempos(50000) normalizados con el promedio asignada a cada estación
         self.randomsStation1 = norm.ppf(np.array(generateRandoms(50000)), loc=muState1)
         self.randomsStation2 = norm.ppf(np.array(generateRandoms(50000)), loc=muState2)
         self.randomsStation3 = norm.ppf(np.array(generateRandoms(50000)), loc=muState3)
         self.randomsStation4 = norm.ppf(np.array(generateRandoms(50000)), loc=muState4)
         self.randomsStation42 = norm.ppf(np.array(generateRandoms(50000)), loc=muState42, scale=sigma)
         self.randomsStation5 = norm.ppf(np.array(generateRandoms(50000)), loc=muState5)
+
+        # Índices con los que se recorren los tiempos anteriores
         self.indexR1 = 0
         self.indexR2 = 0
         self.indexR3 = 0
         self.indexR4 = 0
         self.indexR42 = 0
         self.indexR5 = 0
+
+        # Número de día actual en la simulación
         self.day = 1
+
+        # Guarda la cantidad de cajas de bocadillos que finalizaron
         self.nBocadillosFinish = 0
+
+        # Guarda la cantidad de cajas de bocadillos que se han usado
         self.nGuavasUsed = 0
+
+        # Recibe la cantidad de cajas por día que llegan a la bodega
+        self.nBoxPerDay = nBoxPerDay
+
+    # Método que agrega n cajas de guayabas a la bodega con permanencia inicial en 0
 
     def simulationInit(self):
         print("Stock en bodega: ", len(self.stack))
-        for x in range(14):
+        for x in range(self.nBoxPerDay):
             self.stack.append(0)
         print("Han llegado 14 guayabas")
         print("Stock en bodega: ", len(self.stack))
 
+    # Método que simula el proceso en la estación 1
+    # Retorna la cola con las cajas que se pudieron procesar por día
     def station_1(self):
         lastGuava = None
         stack = []
@@ -75,11 +107,11 @@ class Queue_Guava:
             else:
                 danger += 1
                 self.stack.pop(0)
-        print("Longitud ", len(self.stack))
-        print("Se botaron " + str(danger) + " guayabas.")
         self.dangerGuava += danger
         return stack
 
+    # Método que simula el proceso en la estación 2
+    # Retorna la cola con las cajas que se pudieron procesar por día
     def station_2(self):
         lastGuava = None
         stack = []
@@ -109,6 +141,8 @@ class Queue_Guava:
 
         return stack
 
+    # Método que simula el proceso en la estación 3
+    # Retorna la cola con las cajas que se pudieron procesar por día
     def station_3(self):
         lastGuava = None
         stack = []
@@ -138,6 +172,8 @@ class Queue_Guava:
             i += 1
         return stack
 
+    # Método que simula el proceso en la estación 4
+    # Retorna la cola con las cajas que se pudieron procesar por día
     def station_4(self):
         lastGuava = None
         stack = []
@@ -190,6 +226,8 @@ class Queue_Guava:
 
         return stack
 
+    # Método que simula el proceso en la estación 5
+    # Retorna la cola con las cajas que se pudieron procesar por día
     def station_5(self):
         lastGuava = None
         stack = []
@@ -227,6 +265,7 @@ class Queue_Guava:
         for x in stack:
             print(x)
 
+    # Método que inicia la simulación, recibe los días a simular.
     def start(self, days):
         for x in range(days):
             self.day = x
@@ -290,5 +329,5 @@ def generateRandoms(n):
     return np.array(randoms)
 
 
-queue = Queue_Guava(40, 65, 25, 25, 120, 20, 50)
+queue = Queue_Guava(14, 40, 65, 25, 25, 120, 20, 50)
 queue.start(25)
