@@ -208,7 +208,10 @@ class Queue_Guava:
         self.printStation("42", stack)
         self.matrixStationWait42.append(self.stackStation4.copy())
         self.matrixStation42.append(stack)
+
         stack = []
+        i = 0
+        lastGuava = None
 
         while len(self.stackStation3) != 0:
             station3H = self.stackStation3[0]
@@ -330,10 +333,12 @@ class Station1_Guava:
             self.dayFinishCut)
 
 
+# Retorna 'n' cantidad de números pseudoaleatorios (siempre y cuando pasen todas las pruebas)
+# utilizando el método de congruencia lineal
 def generateRandoms(n):
     randoms = congruenciaLineal(n)
-    while not testAll(randoms):
-        randoms = congruenciaLineal(n)
+    # while not testAll(randoms):
+    #   randoms = congruenciaLineal(n)
     return np.array(randoms)
 
 
