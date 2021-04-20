@@ -36,6 +36,7 @@ class Queue_Guava:
         self.stackStation4 = []
         self.matrixStationWait4 = []
         self.stackStation42 = []
+        self.matrixStation42 = []
         self.matrixStationWait42 = []
         self.matrixStation4 = []
         self.stackStation5 = []
@@ -99,6 +100,7 @@ class Queue_Guava:
                     self.stack = listStack.tolist()
                     break
                 self.nGuavasUsed += 1
+                lastGuava.lastDayInStaiton = self.day
                 self.stackStation1.append(lastGuava)
                 stack.append(lastGuava)
                 self.indexR1 += 1
@@ -118,13 +120,13 @@ class Queue_Guava:
         i = 0
         while len(self.stackStation1) != 0:
             station1H = self.stackStation1[0]
-            if station1H.day == self.day:
+            if station1H.lastDayInStaiton == self.day:
                 if i == 0:
                     lastGuava = Station1_Guava(station1H.exit, station1H.exit, self.randomsStation2[self.indexR2],
-                                               self.day)
+                                               station1H.day)
                 else:
                     lastGuava = Station1_Guava(station1H.exit, lastGuava.exit, self.randomsStation2[self.indexR2],
-                                               self.day)
+                                               station1H.day)
             else:
                 if i == 0:
                     lastGuava = Station1_Guava(0, 0, self.randomsStation2[self.indexR2], station1H.day)
@@ -134,6 +136,7 @@ class Queue_Guava:
                 break
             else:
                 self.stackStation1.pop(0)
+            lastGuava.lastDayInStaiton = self.day
             self.stackStation2.append(lastGuava)
             stack.append(lastGuava)
             self.indexR2 += 1
@@ -149,13 +152,13 @@ class Queue_Guava:
         i = 0
         while len(self.stackStation2) != 0:
             station2H = self.stackStation2[0]
-            if station2H.day == self.day:
+            if station2H.lastDayInStaiton == self.day:
                 if i == 0:
                     lastGuava = Station1_Guava(station2H.exit, station2H.exit, self.randomsStation3[self.indexR3],
-                                               self.day)
+                                               station2H.day)
                 else:
                     lastGuava = Station1_Guava(station2H.exit, lastGuava.exit, self.randomsStation3[self.indexR3],
-                                               self.day)
+                                               station2H.day)
             else:
                 if i == 0:
                     lastGuava = Station1_Guava(0, 0, self.randomsStation3[self.indexR3], station2H.day)
@@ -165,6 +168,7 @@ class Queue_Guava:
                 break
             else:
                 self.stackStation2.pop(0)
+            lastGuava.lastDayInStaiton = self.day
             lastGuava.dayMold = self.day
             self.stackStation3.append(lastGuava)
             stack.append(lastGuava)
@@ -183,9 +187,9 @@ class Queue_Guava:
             station4H = self.stackStation4[0]
             if self.day - station4H.dayCut >= 1:
                 if i == 0:
-                    lastGuava = Station1_Guava(0, 0, self.randomsStation42[self.indexR5], station4H.day)
+                    lastGuava = Station1_Guava(0, 0, self.randomsStation42[self.indexR42], station4H.day)
                 else:
-                    lastGuava = Station1_Guava(0, lastGuava.exit, self.randomsStation42[self.indexR5], station4H.day)
+                    lastGuava = Station1_Guava(0, lastGuava.exit, self.randomsStation42[self.indexR42], station4H.day)
             else:
                 break
             if lastGuava.exit >= self.productionTime:
@@ -195,6 +199,7 @@ class Queue_Guava:
             lastGuava.dayMold = station4H.dayMold
             lastGuava.dayCut = station4H.dayCut
             lastGuava.dayFinishCut = self.day
+            lastGuava.lastDayInStaiton = self.day
             self.stackStation42.append(lastGuava)
             stack.append(lastGuava)
             self.indexR42 += 1
@@ -202,6 +207,7 @@ class Queue_Guava:
 
         self.printStation("42", stack)
         self.matrixStationWait42.append(self.stackStation4.copy())
+        self.matrixStation42.append(stack)
         stack = []
 
         while len(self.stackStation3) != 0:
@@ -254,6 +260,7 @@ class Queue_Guava:
             lastGuava.dayMold = station5h.dayMold
             lastGuava.dayCut = station5h.dayCut
             lastGuava.dayFinishCut = station5h.dayFinishCut
+            lastGuava.lastDayInStaiton = self.day
             stack.append(lastGuava)
             self.indexR5 += 1
             i += 1
@@ -304,6 +311,7 @@ class Queue_Guava:
 
 
 class Station1_Guava:
+    lastDayInStaiton = -1
     dayMold = -1
     dayCut = -1
     dayFinishCut = -1
