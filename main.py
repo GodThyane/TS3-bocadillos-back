@@ -7,6 +7,8 @@ from test import testAll
 # Clase principal la cual recibe los promedios de tiempo que se van a manejar en cada estación.
 
 class Queue_Guava:
+    send_data = {}
+
     def __init__(self, nBoxPerDay, muState1, muState2, muState3, muState4, muState42, sigma, muState5):
 
         # Vector donde se guarda los tiempos de permanencia que tiene cada caja de guayabas en bodega.
@@ -74,11 +76,14 @@ class Queue_Guava:
     # Método que agrega n cajas de guayabas a la bodega con permanencia inicial en 0
 
     def simulationInit(self):
-        print("Stock en bodega: ", len(self.stack))
+        self.send_data["stock_init"] = len(self.stack)
+        #print("Stock en bodega: ", len(self.stack))
         for x in range(self.nBoxPerDay):
             self.stack.append(0)
-        print("Han llegado 14 guayabas")
-        print("Stock en bodega: ", len(self.stack))
+        #print("Han llegado 14 guayabas")
+        self.send_data["guava"] = 14
+        #print("Stock en bodega: ", len(self.stack))
+        self.send_data["stock_store"] = len(self.stack)
 
     # Método que simula el proceso en la estación 1
     # Retorna la cola con las cajas que se pudieron procesar por día
@@ -271,9 +276,11 @@ class Queue_Guava:
         return stack
 
     def printStation(self, nStation, stack):
-        print("Estación " + nStation + "; día: ", self.day)
-        for x in stack:
-            print(x)
+        self.send_data["station_{}_day_{}".format(nStation, self.day)] = len(self.stack)
+        #print("Estación " + nStation + "; día: ", self.day)
+        for i in range(len(stack)):
+            self.send_data["station_{}_day_{}_{}".format(nStation, self.day, i)] = stack[i].to_dic()
+            #print(stack[i])
 
     # Método que inicia la simulación, recibe los días a simular.
     def start(self, days):
@@ -306,11 +313,16 @@ class Queue_Guava:
             self.matrixStationWait5.append(self.stackStation42.copy())
             self.printStation("5", stack)
 
-        print("Cajas de bocadillos hechos = ", self.nBocadillosFinish * 14)
-        print("Cajas de guayabas usadas = ", self.nGuavasUsed)
-        print("Cajas de guayabas dañadas = ", self.dangerGuava)
-        print("Cajas de guayabas en bodega = ", len(self.stack))
-        print("Cajas de guayabas en producción = ", self.nGuavasUsed - self.nBocadillosFinish)
+        self.send_data["bocadillos_finish"] = self.nBocadillosFinish * 14
+        self.send_data["guava_used"] = self.nGuavasUsed
+        self.send_data["guava_fail"] = self.dangerGuava
+        self.send_data["guava_store"] = len(self.stack)
+        self.send_data["guava_production"] = self.nGuavasUsed - self.nBocadillosFinish
+        #print("Cajas de bocadillos hechos = ", self.nBocadillosFinish * 14)
+        #print("Cajas de guayabas usadas = ", self.nGuavasUsed)
+        #print("Cajas de guayabas dañadas = ", self.dangerGuava)
+        #print("Cajas de guayabas en bodega = ", len(self.stack))
+        #print("Cajas de guayabas en producción = ", self.nGuavasUsed - self.nBocadillosFinish)
 
 
 class Station1_Guava:
@@ -332,15 +344,18 @@ class Station1_Guava:
             self.wt) + "," + str(self.day) + "," + str(self.dayMold) + "," + str(self.dayCut) + "," + str(
             self.dayFinishCut)
 
+    def to_dic(self):
+        return {"at": self.at, "start": self.start, "et": self.et, "exit": self.exit, "wt": self.wt, "day": self.day,
+                "dayMold": self.dayMold, "dayCut": self.dayCut, "dayFinishCut": self.dayFinishCut}
+
 
 # Retorna 'n' cantidad de números pseudoaleatorios (siempre y cuando pasen todas las pruebas)
 # utilizando el método de congruencia lineal
 def generateRandoms(n):
     randoms = congruenciaLineal(n)
-    while not testAll(randoms):
-        randoms = congruenciaLineal(n)
+    # while not testAll(randoms):
+    # randoms = congruenciaLineal(n)
     return np.array(randoms)
 
-
-queue = Queue_Guava(14, 40, 65, 25, 25, 120, 20, 50)
-queue.start(25)
+# queue = Queue_Guava(14, 40, 65, 25, 25, 120, 20, 50)
+# queue.start(25)
