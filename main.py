@@ -276,11 +276,12 @@ class Queue_Guava:
         return stack
 
     def printStation(self, nStation, stack):
-        self.send_data["station_{}_day_{}".format(nStation, self.day)] = len(self.stack)
         #print("Estación " + nStation + "; día: ", self.day)
+        info = {}
         for i in range(len(stack)):
-            self.send_data["station_{}_day_{}_{}".format(nStation, self.day, i)] = stack[i].to_dic()
+            info["station_{}_day_{}_{}".format(nStation, self.day, i)] = stack[i].to_dic()
             #print(stack[i])
+        self.send_data["station_{}_day_{}".format(nStation, self.day)] = {"station":len(self.stack),"info":info}
 
     # Método que inicia la simulación, recibe los días a simular.
     def start(self, days):
