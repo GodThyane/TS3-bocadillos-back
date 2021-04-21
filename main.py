@@ -210,7 +210,7 @@ class Queue_Guava:
             self.indexR42 += 1
             i += 1
 
-        self.printStation("42", stack)
+        self.printStation("42", stack, self.stackStation4)
         self.matrixStationWait42.append(self.stackStation4.copy())
         self.matrixStation42.append(stack)
 
@@ -275,8 +275,8 @@ class Queue_Guava:
 
         return stack
 
-    def printStation(self, nStation, stack):
-        self.send_data["station_{}_day_{}".format(nStation, self.day)] = len(self.stack)
+    def printStation(self, nStation, stack, waitStack):
+        self.send_data["station_{}_day_{}".format(nStation, self.day)] = len(waitStack)
         #print("Estación " + nStation + "; día: ", self.day)
         for i in range(len(stack)):
             self.send_data["station_{}_day_{}_{}".format(nStation, self.day, i)] = stack[i].to_dic()
@@ -290,28 +290,28 @@ class Queue_Guava:
             stack = self.station_1()
             self.matrixStation1.append(stack)
             self.matrixStationWait1.append(self.stack.copy())
-            self.printStation("1", stack)
+            self.printStation("1", stack, self.stack)
 
             stack = self.station_2()
             self.matrixStation2.append(stack)
             self.matrixStationWait2.append(self.stackStation1.copy())
-            self.printStation("2", stack)
+            self.printStation("2", stack, self.stackStation1)
 
             stack = self.station_3()
             self.matrixStation3.append(stack)
             self.matrixStationWait3.append(self.stackStation2.copy())
-            self.printStation("3", stack)
+            self.printStation("3", stack, self.stackStation2)
 
             stack = self.station_4()
             self.matrixStation4.append(stack)
             self.matrixStationWait4.append(self.stackStation3.copy())
-            self.printStation("4", stack)
+            self.printStation("4", stack, self.stackStation3)
 
             stack = self.station_5()
             self.nBocadillosFinish += len(stack)
             self.matrixStation5.append(stack)
             self.matrixStationWait5.append(self.stackStation42.copy())
-            self.printStation("5", stack)
+            self.printStation("5", stack, self.stackStation42)
 
         self.send_data["bocadillos_finish"] = self.nBocadillosFinish * 14
         self.send_data["guava_used"] = self.nGuavasUsed
