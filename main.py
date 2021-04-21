@@ -77,12 +77,12 @@ class Queue_Guava:
 
     def simulationInit(self):
         self.send_data["stock_init"] = len(self.stack)
-        #print("Stock en bodega: ", len(self.stack))
+        # print("Stock en bodega: ", len(self.stack))
         for x in range(self.nBoxPerDay):
             self.stack.append(0)
-        #print("Han llegado 14 guayabas")
+        # print("Han llegado 14 guayabas")
         self.send_data["guava"] = 14
-        #print("Stock en bodega: ", len(self.stack))
+        # print("Stock en bodega: ", len(self.stack))
         self.send_data["stock_store"] = len(self.stack)
 
     # Método que simula el proceso en la estación 1
@@ -276,11 +276,12 @@ class Queue_Guava:
         return stack
 
     def printStation(self, nStation, stack, waitStack):
-        self.send_data["station_{}_day_{}".format(nStation, self.day)] = len(waitStack)
-        #print("Estación " + nStation + "; día: ", self.day)
+        info = {}
+        # print("Estación " + nStation + "; día: ", self.day)
         for i in range(len(stack)):
-            self.send_data["station_{}_day_{}_{}".format(nStation, self.day, i)] = stack[i].to_dic()
-            #print(stack[i])
+            info["station_{}_day_{}_{}".format(nStation, self.day, i)] = stack[i].to_dic()
+            # print(stack[i])
+        self.send_data["station_{}_day_{}".format(nStation, self.day)] = {"station": len(waitStack), "info": info}
 
     # Método que inicia la simulación, recibe los días a simular.
     def start(self, days):
@@ -318,11 +319,11 @@ class Queue_Guava:
         self.send_data["guava_fail"] = self.dangerGuava
         self.send_data["guava_store"] = len(self.stack)
         self.send_data["guava_production"] = self.nGuavasUsed - self.nBocadillosFinish
-        #print("Cajas de bocadillos hechos = ", self.nBocadillosFinish * 14)
-        #print("Cajas de guayabas usadas = ", self.nGuavasUsed)
-        #print("Cajas de guayabas dañadas = ", self.dangerGuava)
-        #print("Cajas de guayabas en bodega = ", len(self.stack))
-        #print("Cajas de guayabas en producción = ", self.nGuavasUsed - self.nBocadillosFinish)
+        # print("Cajas de bocadillos hechos = ", self.nBocadillosFinish * 14)
+        # print("Cajas de guayabas usadas = ", self.nGuavasUsed)
+        # print("Cajas de guayabas dañadas = ", self.dangerGuava)
+        # print("Cajas de guayabas en bodega = ", len(self.stack))
+        # print("Cajas de guayabas en producción = ", self.nGuavasUsed - self.nBocadillosFinish)
 
 
 class Station1_Guava:
